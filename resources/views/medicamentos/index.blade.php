@@ -14,6 +14,42 @@
         </div>
     </div>
 
+    <!-- Dashboard de Estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted mb-0">Total de Medicamentos</h6>
+                    <h3 class="text-primary fw-bold">{{ $totalMedicamentos }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted mb-0">Stock Bajo</h6>
+                    <h3 class="text-danger fw-bold">{{ $stockBajo }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted mb-0">Vencidos</h6>
+                    <h3 class="text-danger fw-bold">{{ $vencidos }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted mb-0">Próximos a Vencer</h6>
+                    <h3 class="text-warning fw-bold">{{ $proximosAVencer }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Mensajes Flash -->
     @if ($message = Session::get('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -28,6 +64,34 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
+
+    <!-- Barra de Búsqueda -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body p-3">
+            <form method="GET" action="{{ route('medicamentos.index') }}" class="d-flex gap-2">
+                <div class="flex-grow-1">
+                    <input type="text" 
+                           class="form-control form-control-lg" 
+                           name="search" 
+                           placeholder="🔍 Buscar por nombre o código..." 
+                           value="{{ $search }}">
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+                @if ($search)
+                    <a href="{{ route('medicamentos.index') }}" class="btn btn-secondary btn-lg">
+                        <i class="bi bi-x-circle"></i> Limpiar
+                    </a>
+                @endif
+            </form>
+            @if ($search)
+                <small class="text-muted d-block mt-2">
+                    Resultados de búsqueda para: <strong>"{{ $search }}"</strong>
+                </small>
+            @endif
+        </div>
+    </div>
 
     <!-- Tabla de medicamentos -->
     <div class="table-responsive">
@@ -134,7 +198,7 @@
     <!-- Paginación -->
     @if ($medicamentos->count())
         <div class="d-flex justify-content-center mt-4">
-            {{ $medicamentos->links('pagination::bootstrap-5') }}
+            {{ $medicamentos->appends(request()->query())->links('pagination::bootstrap-5') }}
         </div>
     @endif
 </div>

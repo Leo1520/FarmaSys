@@ -12,11 +12,25 @@ class MedicamentoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        $medicamentos = Medicamento::paginate(15);
+        $search = $request->input('search');
+        
+        $medicamentos = Medicamento::query()
+            ->when($search, function ($query, $search) {
+                return $query->where('nombre', 'like', '%' . $search . '%')
+                             ->orWhere('codigo', 'like', '%' . $search . '%');
+            })
+            ->orderBy('nombre')
+            ->paginate(15);
 
-        return view('medicamentos.index', compact('medicamentos'));
+        // Contadores para el dashboard
+        $totalMedicamentos = Medicamento::count();
+        $stockBajo = Medicamento::stockBajo()->count();
+        $vencidos = Medicamento::vencidos()->count();
+        $proximosAVencer = Medicamento::proximosAVencer()->count();
+
+        return view('medicamentos.index', compact('medicamentos', 'search', 'totalMedicamentos', 'stockBajo', 'vencidos', 'proximosAVencer'));
     }
 
     /**

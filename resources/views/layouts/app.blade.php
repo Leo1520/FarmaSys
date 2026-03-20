@@ -114,7 +114,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{{ route('lista-compra.index') }}">
                             <i class="bi bi-list-check"></i> Lista de Compra
                         </a>
                     </li>
