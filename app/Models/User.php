@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -22,6 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'rol',
     ];
 
     /**
@@ -44,6 +46,47 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'ultimo_acceso' => 'datetime',
         ];
+    }
+
+    /**
+     * Relación: Un usuario tiene muchas acciones en el historial
+     */
+    public function acciones(): HasMany
+    {
+        return $this->hasMany(HistorialAccion::class, 'usuario_id');
+    }
+
+    /**
+     * Verificar si el usuario es admin
+     */
+    public function esAdmin(): bool
+    {
+        return $this->rol === 'admin';
+    }
+
+    /**
+     * Verificar si el usuario es farmacéutica
+     */
+    public function esFarmaceutica(): bool
+    {
+        return $this->rol === 'farmaceutica';
+    }
+
+    /**
+     * Scope para obtener solo admins
+     */
+    public function scopeAdmin($query)
+    {
+        return $query->where('rol', 'admin');
+    }
+
+    /**
+     * Actualizar último acceso
+     */
+    public function actualizarUltimoAcceso()
+    {
+        $this->update(['ultimo_acceso' => now()]);
     }
 }
