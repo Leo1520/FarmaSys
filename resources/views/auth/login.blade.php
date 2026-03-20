@@ -216,6 +216,7 @@
                                name="remember"
                                value="1">
                         <label for="remember">Recuérdame</label>
+                        <a href="{{ route('password.forgot') }}" style="margin-left: auto; font-size: 14px;">¿Olvidé mi contraseña?</a>
                     </div>
 
                     <button type="submit" class="btn btn-login">
@@ -226,6 +227,7 @@
 
             <div class="login-footer">
                 <p>¿No tienes cuenta? <a href="{{ route('register') }}">Regístrate aquí</a></p>
+                <p style="margin-top: 10px; font-size: 13px;">¿Olvidaste tu contraseña? <a href="{{ route('password.forgot') }}">Recupérala aquí</a></p>
             </div>
         </div>
 

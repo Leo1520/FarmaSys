@@ -10,6 +10,8 @@ use App\Http\Controllers\MovimientoInventarioController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 
 // Ruta raíz - redirecciona a dashboard si está autenticado, a login si no
 Route::get('/', function () {
@@ -21,6 +23,12 @@ Route::get('login', [LoginController::class, 'create'])->name('login');
 Route::post('login', [LoginController::class, 'store'])->name('login.store');
 Route::get('register', [RegisterController::class, 'create'])->name('register');
 Route::post('register', [RegisterController::class, 'store'])->name('register.store');
+
+// Rutas de recuperación de contraseña
+Route::get('forgot-password', [ForgotPasswordController::class, 'show'])->name('password.forgot');
+Route::post('forgot-password', [ForgotPasswordController::class, 'store'])->name('password.forgot.store');
+Route::get('reset-password', [ResetPasswordController::class, 'show'])->name('password.reset.form');
+Route::post('reset-password', [ResetPasswordController::class, 'store'])->name('password.reset.store');
 
 // Rutas de verificación de email (requieren autenticación)
 Route::middleware('auth')->group(function () {
