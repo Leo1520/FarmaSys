@@ -120,6 +120,11 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ route('movimientos.index') }}">
+                                <i class="bi bi-arrow-left-right"></i> Movimientos
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('lista-compra.index') }}">
                                 <i class="bi bi-list-check"></i> Lista de Compra
                             </a>

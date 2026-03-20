@@ -4,6 +4,46 @@
 
 @section('content')
 <div class="container-fluid mt-5">
+    <!-- Alerta de Usuario Pendiente de Aprobación -->
+    @if (Auth::user()->estaPendiente())
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="bi bi-info-circle"></i>
+            <strong>Cuenta Pendiente de Aprobación</strong> — Tu cuenta está pendiente de aprobación por un administrador.
+            Recibirás una notificación por correo cuando tu solicitud sea procesada.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @elseif (Auth::user()->estado === 'rechazado')
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle"></i>
+            <strong>Solicitud Rechazada</strong> — Tu solicitud de acceso fue rechazada.
+            @if (Auth::user()->razon_rechazo)
+                Razón: {{ Auth::user()->razon_rechazo }}
+            @endif
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @elseif (Auth::user()->estado === 'inactivo')
+        <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i>
+            <strong>Cuenta Inactiva</strong> — Tu cuenta ha sido desactivada. Contacta al administrador para más información.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    <!-- Alerta para Administradores: Usuarios Pendientes -->
+    @if (Auth::user()->esAdmin())
+        @php
+            $usuariosPendientes = \App\Models\User::where('estado', 'pendiente')->count();
+        @endphp
+        @if ($usuariosPendientes > 0)
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <i class="bi bi-people"></i>
+                <strong>Usuarios Pendientes</strong> — Hay {{ $usuariosPendientes }} usuario(s) pendiente(s) de aprobación.
+                <a href="{{ route('approval.pendientes') }}" class="alert-link">Revisar ahora</a>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+    @endif
+
     <!-- Encabezado Bienvenida -->
     <div class="row mb-4">
         <div class="col-md-8">
@@ -15,12 +55,25 @@
             </p>
         </div>
         <div class="col-md-4 text-end">
-            <span class="badge bg-primary">
+            <span class="badge bg-primary me-2">
                 Rol: 
                 @if (Auth::user()->esAdmin())
                     <i class="bi bi-shield-check"></i> Administrador
-                @else
+                @elseif (Auth::user()->esFarmaceutica())
                     <i class="bi bi-person"></i> Farmacéutica
+                @else
+                    <i class="bi bi-eye"></i> Invitado
+                @endif
+            </span>
+            <span class="badge @if (Auth::user()->estaActivo()) bg-success @elseif (Auth::user()->estaPendiente()) bg-warning text-dark @elseif (Auth::user()->estado === 'rechazado') bg-danger @else bg-secondary @endif">
+                @if (Auth::user()->estaActivo())
+                    <i class="bi bi-check-circle"></i> Activo
+                @elseif (Auth::user()->estaPendiente())
+                    <i class="bi bi-hourglass"></i> Pendiente
+                @elseif (Auth::user()->estado === 'rechazado')
+                    <i class="bi bi-x-circle"></i> Rechazado
+                @else
+                    <i class="bi bi-slash-circle"></i> Inactivo
                 @endif
             </span>
         </div>
@@ -211,8 +264,24 @@
                             <td>
                                 @if (Auth::user()->esAdmin())
                                     <span class="badge bg-danger">Administrador</span>
-                                @else
+                                @elseif (Auth::user()->esFarmaceutica())
                                     <span class="badge bg-primary">Farmacéutica</span>
+                                @else
+                                    <span class="badge bg-info">Invitado</span>
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Estado:</strong></td>
+                            <td>
+                                @if (Auth::user()->estaActivo())
+                                    <span class="badge bg-success">Activo</span>
+                                @elseif (Auth::user()->estaPendiente())
+                                    <span class="badge bg-warning text-dark">Pendiente</span>
+                                @elseif (Auth::user()->estado === 'rechazado')
+                                    <span class="badge bg-danger">Rechazado</span>
+                                @else
+                                    <span class="badge bg-secondary">Inactivo</span>
                                 @endif
                             </td>
                         </tr>

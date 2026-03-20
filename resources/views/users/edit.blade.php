@@ -68,14 +68,42 @@
                                 <option value="farmaceutica" @selected(old('rol', $user->rol) === 'farmaceutica')>
                                     <i class="bi bi-person"></i> Farmacéutica
                                 </option>
+                                <option value="invitado" @selected(old('rol', $user->rol) === 'invitado')>
+                                    <i class="bi bi-eye"></i> Invitado
+                                </option>
                             </select>
                             <small class="text-muted d-block mt-2">
                                 <i class="bi bi-info-circle"></i> 
-                                <strong>Admin:</strong> Acceso completo a gestión de usuarios
-                                <br>
-                                <strong>Farmacéutica:</strong> Acceso a medicamentos y listas de compra
+                                <strong>Admin:</strong> Acceso completo<br>
+                                <strong>Farmacéutica:</strong> Acceso a medicamentos y listas<br>
+                                <strong>Invitado:</strong> Solo lectura de medicamentos
                             </small>
                             @error('rol')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Estado -->
+                        <div class="mb-3">
+                            <label for="estado" class="form-label">Estado de la Cuenta</label>
+                            <select name="estado" 
+                                    class="form-select @error('estado') is-invalid @enderror"
+                                    id="estado"
+                                    required>
+                                <option value="pendiente" @selected(old('estado', $user->estado) === 'pendiente')>
+                                    ⏳ Pendiente (Esperando aprobación)
+                                </option>
+                                <option value="activo" @selected(old('estado', $user->estado) === 'activo')>
+                                    ✓ Activo (Acceso permitido)
+                                </option>
+                                <option value="rechazado" @selected(old('estado', $user->estado) === 'rechazado')>
+                                    ✗ Rechazado (Acceso denegado)
+                                </option>
+                                <option value="inactivo" @selected(old('estado', $user->estado) === 'inactivo')>
+                                    ⊗ Inactivo (Desactivado temporalmente)
+                                </option>
+                            </select>
+                            @error('estado')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
@@ -131,14 +159,37 @@
                         <strong>Rol Actual:</strong><br>
                         @if ($user->esAdmin())
                             <span class="badge bg-danger">Administrador</span>
-                        @else
+                        @elseif ($user->esFarmaceutica())
                             <span class="badge bg-primary">Farmacéutica</span>
+                        @else
+                            <span class="badge bg-info">Invitado</span>
                         @endif
                     </p>
-                    <p class="mb-0">
-                        <strong>Estado:</strong><br>
-                        <span class="badge bg-success">Activo</span>
+                    <p class="mb-3">
+                        <strong>Estado Actual:</strong><br>
+                        @if ($user->estaActivo())
+                            <span class="badge bg-success">✓ Activo</span>
+                        @elseif ($user->estaPendiente())
+                            <span class="badge bg-warning text-dark">⏳ Pendiente</span>
+                        @elseif ($user->estado === 'rechazado')
+                            <span class="badge bg-danger">✗ Rechazado</span>
+                        @else
+                            <span class="badge bg-secondary">⊗ Inactivo</span>
+                        @endif
                     </p>
+                    <hr>
+                    <small class="text-muted d-block">
+                        <strong>Registrado:</strong><br>
+                        {{ $user->created_at->format('d/m/Y H:i') }}
+                    </small>
+                    <small class="text-muted d-block mt-2">
+                        <strong>Último acceso:</strong><br>
+                        @if ($user->ultimo_acceso)
+                            {{ $user->ultimo_acceso->format('d/m/Y H:i') }}
+                        @else
+                            Sin acceso
+                        @endif
+                    </small>
                 </div>
             </div>
         </div>

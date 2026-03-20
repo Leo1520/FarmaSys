@@ -39,7 +39,8 @@ class RegisterController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'rol' => 'farmaceutica', // Por defecto, registros nuevos son farmacéutica
+            'rol' => 'invitado', // Nuevos registros: rol invitado (pendiente aprobación)
+            'estado' => 'pendiente', // Pendiente aprobación por admin
         ]);
 
         event(new Registered($user));

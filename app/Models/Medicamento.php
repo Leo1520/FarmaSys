@@ -121,4 +121,12 @@ class Medicamento extends Model
     {
         return "{$this->nombre} (Col: {$this->codigo})";
     }
+
+    /**
+     * Relación: Un medicamento tiene muchos movimientos
+     */
+    public function movimientos()
+    {
+        return $this->hasMany(MovimientoInventario::class);
+    }
 }

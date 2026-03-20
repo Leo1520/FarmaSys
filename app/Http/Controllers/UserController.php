@@ -28,6 +28,11 @@ class UserController extends Controller
             $query->where('rol', $request->input('rol'));
         }
 
+        // Filtrar por estado
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->input('estado'));
+        }
+
         $users = $query->latest('created_at')->paginate(15);
         
         return view('users.index', compact('users'));
@@ -58,10 +63,29 @@ class UserController extends Controller
                 'email',
                 Rule::unique('users')->ignore($user->id),
             ],
-            'rol' => ['required', 'in:admin,farmaceutica'],
+            'rol' => ['required', 'in:admin,farmaceutica,invitado'],
+            'estado' => ['required', 'in:pendiente,activo,rechazado,inactivo'],
         ]);
 
+        $oldRol = $user->rol;
+        $oldEstado = $user->estado;
+        
         $user->update($validated);
+
+        // Registrar cambios en historial si algo cambió
+        if ($oldRol !== $validated['rol'] || $oldEstado !== $validated['estado']) {
+            \App\Models\HistorialAccion::create([
+                'usuario_id' => Auth::id(),
+                'accion' => 'actualizar_usuario',
+                'descripcion' => "Usuario {$user->name} actualizado",
+                'tabla' => 'users',
+                'registro_id' => $user->id,
+                'cambios' => json_encode([
+                    'rol' => ['de' => $oldRol, 'a' => $validated['rol']],
+                    'estado' => ['de' => $oldEstado, 'a' => $validated['estado']],
+                ]),
+            ]);
+        }
 
         return redirect()->route('users.index')
                        ->with('success', "Usuario '{$user->name}' actualizado correctamente.");

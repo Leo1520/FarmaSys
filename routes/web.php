@@ -4,7 +4,9 @@ use App\Http\Controllers\MedicamentoController;
 use App\Http\Controllers\ListaCompraController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\HistorialController;
+use App\Http\Controllers\MovimientoInventarioController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 
@@ -33,10 +35,23 @@ Route::middleware('auth')->group(function () {
         Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::put('users/{user}/cambiar-rol', [ApprovalController::class, 'cambiarRol'])->name('users.cambiar-rol');
+        Route::put('users/{user}/desactivar', [ApprovalController::class, 'desactivar'])->name('users.desactivar');
+        Route::put('users/{user}/reactivar', [ApprovalController::class, 'reactivar'])->name('users.reactivar');
+    });
+    
+    // Rutas de Aprobación de Usuarios (solo admin)
+    Route::middleware('admin')->group(function () {
+        Route::get('approval/pendientes', [ApprovalController::class, 'pendientes'])->name('approval.pendientes');
+        Route::put('approval/{user}/aprobar', [ApprovalController::class, 'aprobar'])->name('approval.aprobar');
+        Route::put('approval/{user}/rechazar', [ApprovalController::class, 'rechazar'])->name('approval.rechazar');
     });
     
     Route::resource('medicamentos', MedicamentoController::class);
     Route::resource('lista-compra', ListaCompraController::class);
+    
+    // Rutas de Movimientos de Inventario
+    Route::resource('movimientos', MovimientoInventarioController::class)->only(['index', 'create', 'store', 'show']);
 
     // Rutas para exportar a PDF
     Route::get('medicamentos/exportar/pdf', [MedicamentoController::class, 'exportarPDF'])->name('medicamentos.exportar-pdf');
