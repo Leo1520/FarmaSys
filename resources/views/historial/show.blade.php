@@ -140,6 +140,28 @@
                             </div>
                         @elseif ($historial->accion === 'actualizar')
                             <h6>Comparación de Cambios:</h6>
+                            <style>
+                                .row-cambio {
+                                    background-color: #fff3cd !important;
+                                }
+                                .row-cambio .cambio-anterior,
+                                .row-cambio .cambio-nuevo {
+                                    background-color: #ffe69c !important;
+                                    font-weight: 600;
+                                }
+                                .row-sin-cambio {
+                                    opacity: 0.6;
+                                }
+                                .row-sin-cambio td {
+                                    color: #6c757d;
+                                }
+                                .badge-cambio {
+                                    background-color: #ffc107 !important;
+                                    color: #000 !important;
+                                    font-size: 0.7rem;
+                                    margin-left: 5px;
+                                }
+                            </style>
                             <div class="table-responsive">
                                 <table class="table table-sm">
                                     <thead>
@@ -157,13 +179,25 @@
                                         @endphp
                                         @forelse ($todos_campos as $campo)
                                             @if (!in_array($campo, ['created_at', 'updated_at', 'remember_token']))
-                                                <tr>
-                                                    <td><strong>{{ $campo }}</strong></td>
-                                                    <td class="text-danger">
-                                                        <code>{{ $campos_anteriores[$campo] ?? '-' }}</code>
+                                                @php
+                                                    $valor_anterior = $campos_anteriores[$campo] ?? '';
+                                                    $valor_nuevo = $campos_nuevos[$campo] ?? '';
+                                                    $cambio_detectado = (string)$valor_anterior !== (string)$valor_nuevo;
+                                                @endphp
+                                                <tr class="{{ $cambio_detectado ? 'row-cambio' : 'row-sin-cambio' }}">
+                                                    <td>
+                                                        <strong>{{ $campo }}</strong>
+                                                        @if ($cambio_detectado)
+                                                            <span class="badge badge-cambio">
+                                                                <i class="bi bi-exclamation-circle"></i> CAMBIÓ
+                                                            </span>
+                                                        @endif
                                                     </td>
-                                                    <td class="text-success">
-                                                        <code>{{ $campos_nuevos[$campo] ?? '-' }}</code>
+                                                    <td class="{{ $cambio_detectado ? 'cambio-anterior' : '' }}">
+                                                        <code>{{ $valor_anterior ?? '-' }}</code>
+                                                    </td>
+                                                    <td class="{{ $cambio_detectado ? 'cambio-nuevo' : '' }}">
+                                                        <code>{{ $valor_nuevo ?? '-' }}</code>
                                                     </td>
                                                 </tr>
                                             @endif
