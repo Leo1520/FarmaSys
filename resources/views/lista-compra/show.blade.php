@@ -130,6 +130,14 @@
             </a>
         </div>
         <div class="col-md-6">
+            <a href="{{ route('lista-compra.exportar-pdf', $listaCompra->id) }}" class="btn btn-info btn-lg w-100 mb-2">
+                <i class="bi bi-file-pdf"></i> Descargar PDF
+            </a>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12">
             <form action="{{ route('lista-compra.destroy', $listaCompra->id) }}" 
                   method="POST">
                 @csrf

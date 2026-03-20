@@ -184,6 +184,9 @@
                     <a href="{{ route('medicamentos.edit', $medicamento->id) }}" class="btn btn-warning w-100 mb-2">
                         <i class="bi bi-pencil"></i> Editar
                     </a>
+                    <a href="{{ route('medicamentos.exportar-medicamento-pdf', $medicamento->id) }}" class="btn btn-info w-100 mb-2">
+                        <i class="bi bi-file-pdf"></i> Descargar PDF
+                    </a>
                     <form action="{{ route('medicamentos.destroy', $medicamento->id) }}" 
                           method="POST" 
                           style="display: inline-block; width: 100%;">

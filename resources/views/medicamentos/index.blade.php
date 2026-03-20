@@ -68,28 +68,37 @@
     <!-- Barra de Búsqueda -->
     <div class="card shadow-sm mb-4">
         <div class="card-body p-3">
-            <form method="GET" action="{{ route('medicamentos.index') }}" class="d-flex gap-2">
-                <div class="flex-grow-1">
-                    <input type="text" 
-                           class="form-control form-control-lg" 
-                           name="search" 
-                           placeholder="🔍 Buscar por nombre o código..." 
-                           value="{{ $search }}">
+            <div class="row">
+                <div class="col-md-8">
+                    <form method="GET" action="{{ route('medicamentos.index') }}" class="d-flex gap-2">
+                        <div class="flex-grow-1">
+                            <input type="text" 
+                                   class="form-control form-control-lg" 
+                                   name="search" 
+                                   placeholder="🔍 Buscar por nombre o código..." 
+                                   value="{{ $search }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-search"></i> Buscar
+                        </button>
+                        @if ($search)
+                            <a href="{{ route('medicamentos.index') }}" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-x-circle"></i> Limpiar
+                            </a>
+                        @endif
+                    </form>
+                    @if ($search)
+                        <small class="text-muted d-block mt-2">
+                            Resultados de búsqueda para: <strong>"{{ $search }}"</strong>
+                        </small>
+                    @endif
                 </div>
-                <button type="submit" class="btn btn-primary btn-lg">
-                    <i class="bi bi-search"></i> Buscar
-                </button>
-                @if ($search)
-                    <a href="{{ route('medicamentos.index') }}" class="btn btn-secondary btn-lg">
-                        <i class="bi bi-x-circle"></i> Limpiar
+                <div class="col-md-4">
+                    <a href="{{ route('medicamentos.exportar-pdf') }}?{{ request()->getQueryString() }}" class="btn btn-danger btn-lg w-100">
+                        <i class="bi bi-file-pdf"></i> Descargar PDF
                     </a>
-                @endif
-            </form>
-            @if ($search)
-                <small class="text-muted d-block mt-2">
-                    Resultados de búsqueda para: <strong>"{{ $search }}"</strong>
-                </small>
-            @endif
+                </div>
+            </div>
         </div>
     </div>
 

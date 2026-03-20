@@ -6,6 +6,7 @@ use App\Models\Medicamento;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class MedicamentoController extends Controller
 {
@@ -100,5 +101,35 @@ class MedicamentoController extends Controller
         return redirect()
             ->route('medicamentos.index')
             ->with('success', "Medicamento '{$nombre}' eliminado exitosamente.");
+    }
+
+    /**
+     * Exportar lista de medicamentos a PDF
+     */
+    public function exportarPDF(Request $request)
+    {
+        $search = $request->input('search');
+        
+        $medicamentos = Medicamento::query()
+            ->when($search, function ($query, $search) {
+                return $query->where('nombre', 'like', '%' . $search . '%')
+                             ->orWhere('codigo', 'like', '%' . $search . '%');
+            })
+            ->orderBy('nombre')
+            ->get();
+
+        $pdf = Pdf::loadView('medicamentos.pdf-index', compact('medicamentos', 'search'));
+        
+        return $pdf->download('medicamentos-' . date('Y-m-d-His') . '.pdf');
+    }
+
+    /**
+     * Exportar medicamento individual a PDF
+     */
+    public function exportarMedicamentoPDF(Medicamento $medicamento)
+    {
+        $pdf = Pdf::loadView('medicamentos.pdf-show', compact('medicamento'));
+        
+        return $pdf->download('medicamento-' . $medicamento->nombre . '.pdf');
     }
 }

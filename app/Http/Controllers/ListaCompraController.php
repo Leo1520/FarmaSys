@@ -8,6 +8,7 @@ use App\Models\Medicamento;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ListaCompraController extends Controller
 {
@@ -141,5 +142,17 @@ class ListaCompraController extends Controller
         $detalle->delete();
 
         return redirect()->back()->with('success', 'Medicamento removido de la lista.');
+    }
+
+    /**
+     * Exportar lista de compra a PDF
+     */
+    public function exportarPDF(ListaCompra $listaCompra)
+    {
+        $detalles = $listaCompra->detalles()->with('medicamento')->get();
+
+        $pdf = Pdf::loadView('lista-compra.pdf-show', compact('listaCompra', 'detalles'));
+        
+        return $pdf->download('lista-compra-' . $listaCompra->id . '-' . date('Y-m-d') . '.pdf');
     }
 }

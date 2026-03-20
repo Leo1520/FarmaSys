@@ -68,6 +68,13 @@
                                 <i class="bi bi-eye"></i>
                             </a>
 
+                            <!-- Botón Descargar PDF -->
+                            <a href="{{ route('lista-compra.exportar-pdf', $lista->id) }}" 
+                               class="btn btn-sm btn-danger" 
+                               title="Descargar PDF">
+                                <i class="bi bi-file-pdf"></i>
+                            </a>
+
                             <!-- Botón Editar -->
                             <a href="{{ route('lista-compra.edit', $lista->id) }}" 
                                class="btn btn-sm btn-warning" 
