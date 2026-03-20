@@ -47,6 +47,7 @@ class RegisterController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('dashboard')->with('success', '¡Registro exitoso! Bienvenido a FarmaSys.');
+        // Redirigir a verificación de email
+        return redirect()->route('email.verify.show')->with('success', '¡Registro exitoso! Por favor verifica tu correo electrónico.');
     }
 }

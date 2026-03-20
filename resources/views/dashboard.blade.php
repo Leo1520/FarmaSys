@@ -44,6 +44,16 @@
         @endif
     @endif
 
+    <!-- Alerta de Verificación de Email No Realizada -->
+    @if (!Auth::user()->hasVerifiedEmail())
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="bi bi-envelope-exclamation"></i>
+            <strong>Email No Verificado</strong> — Tu correo electrónico aún no ha sido verificado.
+            <a href="{{ route('email.verify.show') }}" class="alert-link">Ir a verificación</a>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
     <!-- Encabezado Bienvenida -->
     <div class="row mb-4">
         <div class="col-md-8">
@@ -292,6 +302,16 @@
                                     {{ Auth::user()->ultimo_acceso->format('d/m/Y H:i') }}
                                 @else
                                     Primer acceso
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Email Verificado:</strong></td>
+                            <td>
+                                @if (Auth::user()->hasVerifiedEmail())
+                                    <span class="badge bg-success"><i class="bi bi-check-circle"></i> Sí</span>
+                                @else
+                                    <span class="badge bg-warning text-dark"><i class="bi bi-hourglass"></i> No</span>
                                 @endif
                             </td>
                         </tr>

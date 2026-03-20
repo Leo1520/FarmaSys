@@ -109,6 +109,24 @@ class User extends Authenticatable
     }
 
     /**
+     * Verificar si el email ha sido verificado
+     */
+    public function hasVerifiedEmail(): bool
+    {
+        return $this->email_verified_at !== null;
+    }
+
+    /**
+     * Marcar email como verificado
+     */
+    public function markEmailAsVerified(): bool
+    {
+        return $this->forceFill([
+            'email_verified_at' => $this->freshTimestamp(),
+        ])->save();
+    }
+
+    /**
      * Scope para obtener solo admins
      */
     public function scopeAdmin($query)

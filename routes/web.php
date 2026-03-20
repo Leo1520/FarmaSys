@@ -9,6 +9,7 @@ use App\Http\Controllers\HistorialController;
 use App\Http\Controllers\MovimientoInventarioController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\VerificationController;
 
 // Ruta raíz - redirecciona a dashboard si está autenticado, a login si no
 Route::get('/', function () {
@@ -21,8 +22,16 @@ Route::post('login', [LoginController::class, 'store'])->name('login.store');
 Route::get('register', [RegisterController::class, 'create'])->name('register');
 Route::post('register', [RegisterController::class, 'store'])->name('register.store');
 
-// Rutas protegidas (requieren autenticación)
+// Rutas de verificación de email (requieren autenticación)
 Route::middleware('auth')->group(function () {
+    Route::get('email/verify', [VerificationController::class, 'show'])->name('email.verify.show');
+    Route::post('email/verify/send', [VerificationController::class, 'send'])->name('verification.send');
+    Route::post('email/verify/resend', [VerificationController::class, 'resend'])->name('verification.resend');
+    Route::get('verify-email/{token}', [VerificationController::class, 'verify'])->name('email.verify');
+});
+
+// Rutas protegidas (requieren autenticación Y verificación de email)
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
