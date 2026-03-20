@@ -30,7 +30,6 @@ return new class extends Migration
             $table->timestamps();
             
             // Índices para optimización de consultas
-            $table->index('nombre');
             $table->index('fecha_vencimiento');
         });
     }
