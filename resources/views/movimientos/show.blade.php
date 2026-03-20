@@ -12,9 +12,17 @@
             </h1>
         </div>
         <div class="col-md-4 text-end">
-            <a href="{{ route('movimientos.index') }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Volver
-            </a>
+            <div class="btn-group" role="group">
+                <a href="{{ route('movimientos.exportar-pdf', $movimiento->id) }}" class="btn btn-outline-info" title="Descargar PDF">
+                    <i class="bi bi-download"></i> PDF
+                </a>
+                <a href="{{ route('movimientos.mostrar-envio-comprobante', $movimiento->id) }}" class="btn btn-outline-primary" title="Enviar por email">
+                    <i class="bi bi-envelope-at"></i> Enviar
+                </a>
+                <a href="{{ route('movimientos.index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+            </div>
         </div>
     </div>
 

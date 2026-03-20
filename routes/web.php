@@ -69,6 +69,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     // Rutas de Movimientos de Inventario
     Route::resource('movimientos', MovimientoInventarioController::class)->only(['index', 'create', 'store', 'show']);
+    Route::get('movimientos/{movimiento}/enviar-comprobante', [MovimientoInventarioController::class, 'mostrarFormularioEnvioComprobante'])->name('movimientos.mostrar-envio-comprobante');
+    Route::post('movimientos/{movimiento}/enviar-comprobante', [MovimientoInventarioController::class, 'enviarComprobante'])->name('movimientos.enviar-comprobante');
+    Route::get('movimientos/{movimiento}/exportar/pdf', [MovimientoInventarioController::class, 'exportarPDF'])->name('movimientos.exportar-pdf');
 
     // Rutas para exportar a PDF
     Route::get('medicamentos/exportar/pdf', [MedicamentoController::class, 'exportarPDF'])->name('medicamentos.exportar-pdf');

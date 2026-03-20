@@ -4,8 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Medicamento;
 use App\Models\MovimientoInventario;
+use App\Models\HistorialAccion;
+use App\Mail\ComprobanteMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
 
 class MovimientoInventarioController extends Controller
 {
@@ -111,5 +116,82 @@ class MovimientoInventarioController extends Controller
             'transferencia' => 'Transferencia',
             'otro' => 'Otro',
         ];
+    }
+
+    /**
+     * Mostrar formulario para enviar comprobante por email
+     */
+    public function mostrarFormularioEnvioComprobante(MovimientoInventario $movimiento)
+    {
+        $movimiento->load(['medicamento', 'usuario']);
+        
+        return view('movimientos.enviar-comprobante', compact('movimiento'));
+    }
+
+    /**
+     * Enviar comprobante por email
+     */
+    public function enviarComprobante(Request $request, MovimientoInventario $movimiento)
+    {
+        $validated = $request->validate([
+            'email' => 'required|email',
+            'asunto_adicional' => 'nullable|string|max:200',
+        ]);
+
+        try {
+            // Generar PDF
+            $pdf = Pdf::loadView('movimientos.pdf-comprobante', [
+                'movimiento' => $movimiento,
+            ]);
+
+            // Guardar temporalmente
+            $tempPath = storage_path('app/temp/comprobante-' . $movimiento->id . '-' . time() . '.pdf');
+            
+            // Crear directorio si no existe
+            if (!file_exists(dirname($tempPath))) {
+                mkdir(dirname($tempPath), 0755, true);
+            }
+
+            $pdf->save($tempPath);
+
+            // Enviar email
+            Mail::to($validated['email'])->send(new ComprobanteMail($movimiento, $tempPath));
+
+            // Registrar en auditoría
+            HistorialAccion::create([
+                'usuario_id' => Auth::id(),
+                'accion' => 'enviar_comprobante',
+                'descripcion' => "Comprobante #{$movimiento->id} enviado a {$validated['email']}",
+                'tabla' => 'movimientos_inventario',
+                'registro_id' => $movimiento->id,
+                'cambios' => json_encode([
+                    'email_destino' => $validated['email'],
+                    'medicamento' => $movimiento->medicamento->nombre,
+                    'cantidad' => $movimiento->cantidad,
+                ]),
+            ]);
+
+            // Limpiar archivo temporal
+            if (file_exists($tempPath)) {
+                unlink($tempPath);
+            }
+
+            return redirect()->route('movimientos.show', $movimiento->id)
+                           ->with('success', "Comprobante enviado exitosamente a {$validated['email']}");
+        } catch (\Exception $e) {
+            return back()->withErrors(['email' => 'Error al enviar el comprobante: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Exportar movimiento a PDF
+     */
+    public function exportarPDF(MovimientoInventario $movimiento)
+    {
+        $pdf = Pdf::loadView('movimientos.pdf-comprobante', [
+            'movimiento' => $movimiento,
+        ]);
+
+        return $pdf->download('comprobante-' . $movimiento->id . '-' . date('Y-m-d') . '.pdf');
     }
 }
