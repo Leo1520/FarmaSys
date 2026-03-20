@@ -124,13 +124,20 @@
                                 <i class="bi bi-list-check"></i> Lista de Compra
                             </a>
                         </li>
+                        @if (Auth::user()->esAdmin())
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('users.index') }}">
+                                    <i class="bi bi-people-fill"></i> Usuarios
+                                </a>
+                            </li>
+                        @endif
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-person-circle"></i> {{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">
-                                    <i class="bi bi-gear"></i> Configuración
+                                <li><a class="dropdown-item" href="{{ route('users.show', Auth::user()->id) }}">
+                                    <i class="bi bi-person"></i> Mi Perfil
                                 </a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>

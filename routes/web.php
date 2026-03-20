@@ -3,6 +3,7 @@
 use App\Http\Controllers\MedicamentoController;
 use App\Http\Controllers\ListaCompraController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 
@@ -21,6 +22,18 @@ Route::post('register', [RegisterController::class, 'store'])->name('register.st
 Route::middleware('auth')->group(function () {
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Ruta de perfil personal (accesible para todos)
+    Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
+    
+    // Rutas de Gestión de Usuarios (solo admin)
+    Route::middleware('admin')->group(function () {
+        Route::get('users', [UserController::class, 'index'])->name('users.index');
+        Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    });
+    
     Route::resource('medicamentos', MedicamentoController::class);
     Route::resource('lista-compra', ListaCompraController::class);
 
