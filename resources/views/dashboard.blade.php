@@ -231,5 +231,78 @@
             </div>
         </div>
     </div>
+
+    <!-- Historial Reciente -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history"></i> Historial Reciente
+                    </h5>
+                    <a href="{{ route('historial.personal') }}" class="btn btn-sm btn-outline-primary">
+                        Ver más
+                    </a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Acción</th>
+                                <th>Descripción</th>
+                                <th>Usuario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $historialReciente = \App\Models\HistorialAccion::with('usuario')->latest('created_at')->limit(5)->get();
+                            @endphp
+                            @forelse ($historialReciente as $registro)
+                                <tr>
+                                    <td>
+                                        <small class="text-muted">{{ $registro->created_at->format('d/m/Y H:i') }}</small>
+                                    </td>
+                                    <td>
+                                        @switch($registro->accion)
+                                            @case('crear')
+                                                <span class="badge bg-success">
+                                                    <i class="bi bi-plus-circle"></i> Crear
+                                                </span>
+                                            @break
+                                            @case('actualizar')
+                                                <span class="badge bg-info">
+                                                    <i class="bi bi-pencil"></i> Actualizar
+                                                </span>
+                                            @break
+                                            @case('eliminar')
+                                                <span class="badge bg-danger">
+                                                    <i class="bi bi-trash"></i> Eliminar
+                                                </span>
+                                            @break
+                                            @default
+                                                <span class="badge bg-secondary">{{ $registro->accion }}</span>
+                                        @endswitch
+                                    </td>
+                                    <td>
+                                        {{ $registro->descripcion }}
+                                    </td>
+                                    <td>
+                                        <small>{{ $registro->usuario->name }}</small>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">
+                                        <i class="bi bi-inbox"></i> Sin registros aún
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

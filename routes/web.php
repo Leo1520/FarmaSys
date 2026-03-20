@@ -4,6 +4,7 @@ use App\Http\Controllers\MedicamentoController;
 use App\Http\Controllers\ListaCompraController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\HistorialController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 
@@ -45,4 +46,13 @@ Route::middleware('auth')->group(function () {
     // Rutas adicionales para lista de compra
     Route::post('lista-compra/{listaCompra}/agregar-medicamento', [ListaCompraController::class, 'agregarMedicamento'])->name('lista-compra.agregar');
     Route::delete('lista-compra/{listaCompra}/detalle/{detalle}', [ListaCompraController::class, 'removerMedicamento'])->name('lista-compra.remover');
+    
+    // Rutas de Historial/Auditoría
+    Route::get('historial/personal', [HistorialController::class, 'personal'])->name('historial.personal');
+    Route::get('historial/{historialAccion}', [HistorialController::class, 'show'])->name('historial.show');
+    
+    // Rutas de Auditoría (solo admin)
+    Route::middleware('admin')->group(function () {
+        Route::get('historial', [HistorialController::class, 'index'])->name('historial.index');
+    });
 });

@@ -55,7 +55,7 @@ class User extends Authenticatable
      */
     public function acciones(): HasMany
     {
-        return $this->hasMany(HistorialAccion::class, 'usuario_id');
+        return $this->hasMany(HistorialAccion::class, 'user_id');
     }
 
     /**

@@ -124,10 +124,20 @@
                                 <i class="bi bi-list-check"></i> Lista de Compra
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('historial.personal') }}">
+                                <i class="bi bi-clock-history"></i> Mi Historial
+                            </a>
+                        </li>
                         @if (Auth::user()->esAdmin())
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('users.index') }}">
                                     <i class="bi bi-people-fill"></i> Usuarios
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('historial.index') }}">
+                                    <i class="bi bi-shield-exclamation"></i> Auditoría
                                 </a>
                             </li>
                         @endif

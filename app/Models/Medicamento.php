@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\RegistraHistorial;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Medicamento extends Model
 {
-    use HasFactory;
+    use HasFactory, RegistraHistorial;
 
     /**
      * The table associated with the model.
@@ -111,5 +112,13 @@ class Medicamento extends Model
         return $query->whereNotNull('fecha_vencimiento')
                      ->whereDate('fecha_vencimiento', '<=', now()->addDays(30))
                      ->whereDate('fecha_vencimiento', '>', now());
+    }
+
+    /**
+     * Obtener nombre descriptivo para el historial
+     */
+    public function getNombreParaHistorial(): string
+    {
+        return "{$this->nombre} (Col: {$this->codigo})";
     }
 }
