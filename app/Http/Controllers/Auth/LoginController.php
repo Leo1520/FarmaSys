@@ -34,7 +34,7 @@ class LoginController extends Controller
             // Actualizar último acceso
             Auth::user()->actualizarUltimoAcceso();
 
-            return redirect()->intended(route('dashboard'))->with('success', '¡Bienvenido a FarmaSys!');
+            return redirect()->intended(route('medicamentos.index'))->with('success', '¡Bienvenido a FarmaSys!');
         }
 
         return back()->withErrors([

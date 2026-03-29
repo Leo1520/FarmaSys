@@ -15,12 +15,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Crear usuario administrador de prueba
+        // Crear usuario administrador de prueba con email real
         User::factory()->create([
-            'name' => 'Administrador',
-            'email' => 'admin@farmasys.com',
+            'name' => 'Leonardo Peña',
+            'email' => 'leonardopenaanez@gmail.com',
             'password' => bcrypt('password'),
             'rol' => 'admin',
+            'estado' => 'activo',
+            'email_verified_at' => now(),
         ]);
 
         // Crear usuario farmacéutica de prueba
@@ -29,6 +31,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'farmaceutica@farmasys.com',
             'password' => bcrypt('password'),
             'rol' => 'farmaceutica',
+            'estado' => 'activo',
+            'email_verified_at' => now(),
         ]);
     }
 }
