@@ -184,8 +184,25 @@
 
     <!-- Contenido Principal -->
     <main class="py-4">
+        <!-- Hidden element para pasar mensajes al modal -->
+        @if ($message = Session::get('success'))
+            <div data-message-success="{{ $message }}" style="display: none;"></div>
+        @endif
+        @if ($message = Session::get('error'))
+            <div data-message-error="{{ $message }}" style="display: none;"></div>
+        @endif
+        @if ($message = Session::get('warning'))
+            <div data-message-warning="{{ $message }}" style="display: none;"></div>
+        @endif
+        @if ($message = Session::get('info'))
+            <div data-message-info="{{ $message }}" style="display: none;"></div>
+        @endif
+
         @yield('content')
     </main>
+
+    <!-- Modal de Mensajes -->
+    @include('components.modal-message')
 
     <!-- Footer -->
     <footer>
