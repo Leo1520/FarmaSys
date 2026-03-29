@@ -154,6 +154,33 @@
             font-size: 13px;
             margin-top: 5px;
         }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #2c5aa0;
+            font-size: 18px;
+            padding: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-password:hover {
+            color: #1f3f61;
+            transform: translateY(-50%) scale(1.2);
+        }
+
+        #password {
+            padding-right: 45px;
+        }
     </style>
 </head>
 <body>
@@ -199,12 +226,17 @@
                         <label for="password" class="form-label">
                             <i class="bi bi-lock"></i> Contraseña
                         </label>
-                        <input type="password" 
-                               class="form-control @error('password') is-invalid @enderror" 
-                               id="password" 
-                               name="password"
-                               placeholder="••••••••"
-                               required>
+                        <div class="password-wrapper">
+                            <input type="password" 
+                                   class="form-control @error('password') is-invalid @enderror" 
+                                   id="password" 
+                                   name="password"
+                                   placeholder="••••••••"
+                                   required>
+                            <button type="button" class="toggle-password" id="togglePassword">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
                         @error('password')
                             <div class="error-message">{{ $message }}</div>
                         @enderror
@@ -239,5 +271,27 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Toggle para mostrar/ocultar contraseña
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        });
+    </script>
 </body>
 </html>
