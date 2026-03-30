@@ -15,14 +15,6 @@
         </div>
     </div>
 
-    <!-- Mensajes Flash -->
-    @if ($message = Session::get('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>¡Éxito!</strong> {{ $message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
     <!-- Tabla de listas -->
     <div class="table-responsive">
         <table class="table table-striped table-hover align-middle">

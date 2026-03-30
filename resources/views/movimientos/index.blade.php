@@ -19,14 +19,6 @@
         </div>
     </div>
 
-    <!-- Mensajes -->
-    @if ($message = Session::get('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="bi bi-check-circle"></i> {{ $message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
     <!-- Filtros -->
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">

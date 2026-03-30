@@ -36,8 +36,9 @@
      * @param {string} message - Mensaje del modal
      * @param {string} type - Tipo: 'success', 'error', 'info', 'warning'
      * @param {function} callback - Callback al cerrar (opcional)
+     * @param {number} autoCloseTime - Tiempo en ms para cerrar automáticamente (0 = manual)
      */
-    function showMessageModal(title, message, type = 'info', callback = null) {
+    function showMessageModal(title, message, type = 'info', callback = null, autoCloseTime = 3000) {
         const modal = new bootstrap.Modal(document.getElementById('messageModal'));
         const modalHeader = document.getElementById('modalHeader');
         const messageTitle = document.getElementById('messageTitleText');
@@ -77,6 +78,13 @@
             const offcanvas = document.getElementById('messageModal');
             offcanvas.addEventListener('hidden.bs.modal', callback, { once: true });
         }
+
+        // Auto-cerrar el modal si autoCloseTime > 0
+        if (autoCloseTime > 0) {
+            setTimeout(function() {
+                modal.hide();
+            }, autoCloseTime);
+        }
     }
 
     /**
@@ -89,18 +97,25 @@
         const warningMessage = document.querySelector('[data-message-warning]');
         const infoMessage = document.querySelector('[data-message-info]');
 
+        // Success: se cierra automáticamente en 3 segundos
         if (successMessage) {
             const msg = successMessage.getAttribute('data-message-success');
-            showMessageModal('✅ ¡Éxito!', msg, 'success');
-        } else if (errorMessage) {
+            showMessageModal('✅ ¡Éxito!', msg, 'success', null, 3000);
+        } 
+        // Error: requiere click (autoCloseTime = 0)
+        else if (errorMessage) {
             const msg = errorMessage.getAttribute('data-message-error');
-            showMessageModal('❌ Error', msg, 'error');
-        } else if (warningMessage) {
+            showMessageModal('❌ Error', msg, 'error', null, 0);
+        } 
+        // Warning: se cierra en 4 segundos
+        else if (warningMessage) {
             const msg = warningMessage.getAttribute('data-message-warning');
-            showMessageModal('⚠️ Advertencia', msg, 'warning');
-        } else if (infoMessage) {
+            showMessageModal('⚠️ Advertencia', msg, 'warning', null, 4000);
+        } 
+        // Info: se cierra en 3 segundos
+        else if (infoMessage) {
             const msg = infoMessage.getAttribute('data-message-info');
-            showMessageModal('ℹ️ Información', msg, 'info');
+            showMessageModal('ℹ️ Información', msg, 'info', null, 3000);
         }
     });
 </script>
